@@ -11,10 +11,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import java.time.DayOfWeek
 import java.time.LocalDateTime
+import java.time.Month
 
 class RateRepository(
     private val rateDao: RateDao,
@@ -73,9 +75,40 @@ class RateRepository(
             } else {
                 DayType.WEEKDAY
             }
-            rateDao.getActiveSchedule(planId, dayType, now.toLocalTime())
+            val activeSchedule = rateDao.getActiveSchedule(planId, dayType, now.toLocalTime())
+            if (planId == "GA_GAPOWER_TOUPEV12") {
+                flow {
+                    val schedules = rateDao.getSchedulesForPlan(planId).first()
+                    val effectiveSchedule = schedules.firstOrNull { it.dayType == dayType && it.startTime <= now.toLocalTime() && it.endTime > now.toLocalTime() }
+                    emit(resolveScheduleForSeasonalRules(planId, effectiveSchedule, now, schedules))
+                }
+            } else {
+                activeSchedule
+            }
         } else {
             flow { emit(null) }
+        }
+    }
+
+    companion object {
+        internal fun resolveScheduleForSeasonalRules(
+            planId: String,
+            candidate: RateSchedule?,
+            now: LocalDateTime,
+            matchingSchedules: List<RateSchedule>
+        ): RateSchedule? {
+            if (planId != "GA_GAPOWER_TOUPEV12") return candidate
+
+            val isSummer = now.month in setOf(Month.JUNE, Month.JULY, Month.AUGUST, Month.SEPTEMBER)
+            val isOnPeak = candidate?.label == "On-Peak"
+            val isOffPeak = candidate?.label == "Off-Peak"
+
+            return when {
+                isSummer && isOnPeak -> candidate
+                isSummer && isOffPeak -> candidate
+                !isSummer && isOnPeak -> matchingSchedules.firstOrNull { it.label == "Off-Peak" && it.dayType == candidate?.dayType && it.startTime == candidate.startTime && it.endTime == candidate.endTime }
+                else -> candidate
+            }
         }
     }
 }

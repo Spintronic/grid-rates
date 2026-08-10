@@ -18,7 +18,5 @@ import androidx.room.PrimaryKey
 data class RatePlan(
     @PrimaryKey val id: String,
     val providerId: String,
-    val name: String,
-    val type: String, // Flat, TOU, etc.
-    val description: String
+    val name: String
 )

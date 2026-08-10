@@ -18,7 +18,7 @@ import java.time.LocalTime
 
 @Database(
     entities = [UtilityProvider::class, RatePlan::class, RateSchedule::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

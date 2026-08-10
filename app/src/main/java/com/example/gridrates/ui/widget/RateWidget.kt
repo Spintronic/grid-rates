@@ -24,8 +24,11 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
+import androidx.glance.action.actionStartActivity
+import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.provideContent
+import com.example.gridrates.MainActivity
 import androidx.glance.background as glanceBackground
 import androidx.glance.currentState
 import androidx.glance.layout.Alignment as GlanceAlignment
@@ -76,7 +79,8 @@ class RateWidget : GlanceAppWidget() {
             modifier = GlanceModifier
                 .glanceFillMaxSize()
                 .glanceBackground(borderColor)
-                .glancePadding(2.dp),
+                .glancePadding(4.dp)
+                .clickable(actionStartActivity<MainActivity>()),
             contentAlignment = GlanceAlignment.Center
         ) {
             GlanceBox(
@@ -96,7 +100,7 @@ class RateWidget : GlanceAppWidget() {
                         )
                     )
                     GlanceText(
-                        text = rate.toString(),
+                        text = String.format(java.util.Locale.US, "%.2f", rate),
                         style = GlanceTextStyle(
                             fontSize = 14.sp,
                             fontWeight = GlanceFontWeight.Bold,
@@ -148,7 +152,7 @@ fun WidgetContentPreview() {
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 androidx.compose.material3.Text(
-                    text = sampleRate.toString(),
+                    text = String.format(java.util.Locale.US, "%.2f", sampleRate),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White

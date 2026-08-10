@@ -74,16 +74,6 @@ fun PlanItem(
                 text = plan.name,
                 style = MaterialTheme.typography.titleLarge
             )
-            Text(
-                text = plan.type,
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.secondary
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = plan.description,
-                style = MaterialTheme.typography.bodyMedium
-            )
         }
     }
 }

@@ -24,19 +24,19 @@ object RateDataImporter {
         dao.insertProviders(providers)
 
         val plans = listOf(
-            RatePlan("CA_PGE_EV2A", "pge", "Home Charging EV2-A", "Whole-home TOU", "Time-of-Use for whole-home including EV charging"),
-            RatePlan("CA_PGE_EVB", "pge", "Electric Vehicle Rate Plan EV-B", "EV-only", "Requires second dedicated meter for EV"),
-            RatePlan("TX_TXU_FREENIGHTS", "txu", "Free Nights & Solar Days", "TOU", "Free energy during night hours"),
-            RatePlan("FL_FPL_RTR1", "fpl", "Residential Time-of-Use Rider (RTR-1)", "Whole-home TOU", "Standard residential TOU option"),
-            RatePlan("FL_FPL_EVOLUTION", "fpl", "FPL EVolution Home", "Managed EV charging", "Includes dedicated L2 charger and off-peak rate"),
-            RatePlan("NY_CONED_SMARTCHARGE", "coned", "SmartCharge New York", "Off-peak Incentive", "Rebate for off-peak charging"),
-            RatePlan("PA_PECO_TOU", "peco", "Residential Time-of-Use Pricing", "Whole-home TOU", "Best for usage outside 2-6pm weekdays"),
-            RatePlan("IL_COMED_DTOD", "comed", "Delivery Time-of-Day (DTOD)", "Delivery TOU", "TOU pricing for delivery charges"),
-            RatePlan("IL_COMED_HOURLY", "comed", "Hourly Pricing", "Real-time", "Supply price varies every hour"),
-            RatePlan("OH_AEPOHIO_PEV", "aep_ohio", "Plug-In Electric Vehicle (PEV) Tariff", "TOU", "Separately-metered or whole-home TOU"),
-            RatePlan("GA_GAPOWER_TOUPEV12", "gapower", "Time of Use - PEV", "EV-only", "Requires second dedicated meter"),
-            RatePlan("NC_DUKE_RSTOU", "duke", "Residential Service TOU", "Whole-home TOU", "Standard Duke Energy TOU option"),
-            RatePlan("MI_DTE_TOD", "dte", "Time of Day 3 p.m.-7 p.m.", "Whole-home TOU", "Default DTE residential rate")
+            RatePlan("CA_PGE_EV2A", "pge", "Home Charging EV2-A"),
+            RatePlan("CA_PGE_EVB", "pge", "Electric Vehicle Rate Plan EV-B"),
+            RatePlan("TX_TXU_FREENIGHTS", "txu", "Free Nights & Solar Days"),
+            RatePlan("FL_FPL_RTR1", "fpl", "Residential Time-of-Use Rider (RTR-1)"),
+            RatePlan("FL_FPL_EVOLUTION", "fpl", "FPL EVolution Home"),
+            RatePlan("NY_CONED_SMARTCHARGE", "coned", "SmartCharge New York"),
+            RatePlan("PA_PECO_TOU", "peco", "Residential Time-of-Use Pricing"),
+            RatePlan("IL_COMED_DTOD", "comed", "Delivery Time-of-Day (DTOD)"),
+            RatePlan("IL_COMED_HOURLY", "comed", "Hourly Pricing"),
+            RatePlan("OH_AEPOHIO_PEV", "aep_ohio", "Plug-In Electric Vehicle (PEV) Tariff"),
+            RatePlan("GA_GAPOWER_TOUPEV12", "gapower", "Overnight Advantage"),
+            RatePlan("NC_DUKE_RSTOU", "duke", "Residential Service TOU"),
+            RatePlan("MI_DTE_TOD", "dte", "Time of Day 3 p.m.-7 p.m.")
         )
         dao.insertPlans(plans)
 
@@ -73,11 +73,11 @@ object RateDataImporter {
 
         // GA_GAPOWER_TOUPEV12
         addDailySchedule(schedules, "GA_GAPOWER_TOUPEV12", LocalTime.MIDNIGHT, LocalTime.of(7, 0), 0.02, "Super Off-Peak")
-        addWeekdaySchedule(schedules, "GA_GAPOWER_TOUPEV12", LocalTime.of(7, 0), LocalTime.of(14, 0), 0.07, "Off-Peak")
-        addWeekdaySchedule(schedules, "GA_GAPOWER_TOUPEV12", LocalTime.of(14, 0), LocalTime.of(19, 0), 0.25, "On-Peak")
-        addWeekdaySchedule(schedules, "GA_GAPOWER_TOUPEV12", LocalTime.of(19, 0), LocalTime.of(23, 0), 0.07, "Off-Peak")
+        addWeekdaySchedule(schedules, "GA_GAPOWER_TOUPEV12", LocalTime.of(7, 0), LocalTime.of(14, 0), 0.10, "Off-Peak")
+        addWeekdaySchedule(schedules, "GA_GAPOWER_TOUPEV12", LocalTime.of(14, 0), LocalTime.of(19, 0), 0.30, "On-Peak")
+        addWeekdaySchedule(schedules, "GA_GAPOWER_TOUPEV12", LocalTime.of(19, 0), LocalTime.of(23, 0), 0.10, "Off-Peak")
         addDailySchedule(schedules, "GA_GAPOWER_TOUPEV12", LocalTime.of(23, 0), LocalTime.MAX, 0.02, "Super Off-Peak")
-        addWeekendSchedule(schedules, "GA_GAPOWER_TOUPEV12", LocalTime.of(7, 0), LocalTime.of(23, 0), 0.07, "Off-Peak")
+        addWeekendSchedule(schedules, "GA_GAPOWER_TOUPEV12", LocalTime.of(7, 0), LocalTime.of(23, 0), 0.10, "Off-Peak")
 
         // MI_DTE_TOD
         addDailySchedule(schedules, "MI_DTE_TOD", LocalTime.MIDNIGHT, LocalTime.of(15, 0), 0.18, "Off-Peak")

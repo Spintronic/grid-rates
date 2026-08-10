@@ -28,6 +28,7 @@ import com.example.gridrates.data.local.entity.RateSchedule
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gridrates.data.local.entity.DayType
@@ -208,7 +209,7 @@ fun CurrentRateCard(rateSchedule: RateSchedule?, currentTime: LocalDateTime, isP
             Text(
                 text = currentTime.format(DateTimeFormatter.ofPattern("h:mm a")),
                 style = MaterialTheme.typography.displayLarge.copy(
-                    fontSize = 74.sp,
+                    fontSize = 62.sp,
                     letterSpacing = (-2).sp
                 ),
                 fontWeight = FontWeight.Bold,
@@ -234,9 +235,9 @@ fun CurrentRateCard(rateSchedule: RateSchedule?, currentTime: LocalDateTime, isP
             
             Row(verticalAlignment = Alignment.Bottom) {
                 Text(
-                    text = (rateSchedule?.rate ?: 0.0).toString(),
+                    text = String.format(Locale.US, "%.2f", rateSchedule?.rate ?: 0.0),
                     style = MaterialTheme.typography.displayLarge.copy(
-                        fontSize = 94.sp,
+                        fontSize = 74.sp,
                         letterSpacing = (-4).sp
                     ),
                     fontWeight = FontWeight.Bold,
