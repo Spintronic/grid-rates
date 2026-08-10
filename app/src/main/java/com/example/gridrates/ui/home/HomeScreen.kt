@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -50,11 +51,15 @@ fun HomeScreen(
 
     val displayRate = remember(previewTime, currentRate, dailySchedules) {
         if (previewTime != null) {
-            dailySchedules.find { 
-                val start = it.startTime.toSecondOfDay()
-                val end = if (it.endTime == LocalTime.MIDNIGHT) 24 * 60 * 60 else it.endTime.toSecondOfDay()
-                val now = previewTime!!.toSecondOfDay()
-                now >= start && now < end
+            val nowSeconds = previewTime!!.toSecondOfDay()
+            dailySchedules.firstOrNull { schedule ->
+                val startSeconds = schedule.startTime.toSecondOfDay()
+                val endSeconds = if (schedule.endTime == LocalTime.MIDNIGHT) {
+                    24 * 60 * 60
+                } else {
+                    schedule.endTime.toSecondOfDay()
+                }
+                nowSeconds >= startSeconds && nowSeconds <= endSeconds
             }
         } else {
             currentRate
@@ -178,44 +183,41 @@ fun CurrentRateCard(rateSchedule: RateSchedule?, currentTime: LocalDateTime, isP
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(vertical = 30.dp, horizontal = 32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Box(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 30.dp, horizontal = 32.dp)
         ) {
-            Text(
-                text = currentTime.format(DateTimeFormatter.ofPattern("EEEE, MMM d")),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-            )
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.Start
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                Box(
+                    modifier = Modifier.width(88.dp),
+                    contentAlignment = Alignment.CenterEnd
+                ) {
+                    Text(
+                        text = currentTime.format(DateTimeFormatter.ofPattern("h:mm a")),
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = MaterialTheme.colorScheme.primary,
+                        maxLines = 1,
+                        softWrap = false
+                    )
+                }
+
+                Text(
+                    text = currentTime.format(DateTimeFormatter.ofPattern("EEEE, MMM d")),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                )
+            }
             
             Spacer(modifier = Modifier.height(8.dp))
 
-            if (isPreview) {
-                Surface(
-                    color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f),
-                    shape = RoundedCornerShape(8.dp),
-                    modifier = Modifier.padding(bottom = 8.dp)
-                ) {
-                    Text(
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                        text = "PREVIEW",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.tertiary,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
-
-            Text(
-                text = currentTime.format(DateTimeFormatter.ofPattern("h:mm a")),
-                style = MaterialTheme.typography.displayLarge.copy(
-                    fontSize = 62.sp,
-                    letterSpacing = (-2).sp
-                ),
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
-            
             Spacer(modifier = Modifier.height(16.dp))
             
             Surface(
@@ -237,7 +239,7 @@ fun CurrentRateCard(rateSchedule: RateSchedule?, currentTime: LocalDateTime, isP
                 Text(
                     text = String.format(Locale.US, "%.2f", rateSchedule?.rate ?: 0.0),
                     style = MaterialTheme.typography.displayLarge.copy(
-                        fontSize = 74.sp,
+                        fontSize = 48.sp,
                         letterSpacing = (-4).sp
                     ),
                     fontWeight = FontWeight.Bold,
@@ -250,6 +252,23 @@ fun CurrentRateCard(rateSchedule: RateSchedule?, currentTime: LocalDateTime, isP
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
                     fontWeight = FontWeight.Medium
                 )
+            }
+            }
+
+            if (isPreview) {
+                Surface(
+                    color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f),
+                    shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier.align(Alignment.TopEnd)
+                ) {
+                    Text(
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        text = "PREVIEW",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.tertiary,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
     }
@@ -326,7 +345,7 @@ fun TimelineView(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(80.dp) // Increased height for better interaction
-                    .clip(RoundedCornerShape(40.dp))
+                    .clip(RoundedCornerShape(10.dp))
                     .background(MaterialTheme.colorScheme.surface)
                     .pointerInput(Unit) {
                         detectTapGestures { offset ->
