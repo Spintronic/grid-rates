@@ -76,7 +76,7 @@ class RateRepository(
                 DayType.WEEKDAY
             }
             val activeSchedule = rateDao.getActiveSchedule(planId, dayType, now.toLocalTime())
-            if (planId == "GA_GAPOWER_TOUPEV12") {
+            if (planId in setOf("GA_GAPOWER_TOUPEV12", "GA_GAPOWER_NIGHTS_WEEKENDS")) {
                 flow {
                     val schedules = rateDao.getSchedulesForPlan(planId).first()
                     val effectiveSchedule = schedules.firstOrNull { it.dayType == dayType && it.startTime <= now.toLocalTime() && it.endTime > now.toLocalTime() }
@@ -97,7 +97,7 @@ class RateRepository(
             now: LocalDateTime,
             matchingSchedules: List<RateSchedule>
         ): RateSchedule? {
-            if (planId != "GA_GAPOWER_TOUPEV12") return candidate
+            if (planId !in setOf("GA_GAPOWER_TOUPEV12", "GA_GAPOWER_NIGHTS_WEEKENDS")) return candidate
 
             val isSummer = now.month in setOf(Month.JUNE, Month.JULY, Month.AUGUST, Month.SEPTEMBER)
             val isOnPeak = candidate?.label == "On-Peak"

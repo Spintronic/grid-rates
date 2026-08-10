@@ -13,13 +13,7 @@ object RateDataImporter {
             UtilityProvider("pge", "Pacific Gas & Electric (PG&E)", "California"),
             UtilityProvider("txu", "TXU Energy", "Texas"),
             UtilityProvider("fpl", "Florida Power & Light (FPL)", "Florida"),
-            UtilityProvider("coned", "Consolidated Edison (Con Edison)", "New York"),
-            UtilityProvider("peco", "PECO Energy", "Pennsylvania"),
-            UtilityProvider("comed", "Commonwealth Edison (ComEd)", "Illinois"),
-            UtilityProvider("aep_ohio", "AEP Ohio", "Ohio"),
-            UtilityProvider("gapower", "Georgia Power", "Georgia"),
-            UtilityProvider("duke", "Duke Energy", "North Carolina"),
-            UtilityProvider("dte", "DTE Energy", "Michigan")
+            UtilityProvider("gapower", "Georgia Power", "Georgia")
         )
         dao.insertProviders(providers)
 
@@ -29,14 +23,8 @@ object RateDataImporter {
             RatePlan("TX_TXU_FREENIGHTS", "txu", "Free Nights & Solar Days"),
             RatePlan("FL_FPL_RTR1", "fpl", "Residential Time-of-Use Rider (RTR-1)"),
             RatePlan("FL_FPL_EVOLUTION", "fpl", "FPL EVolution Home"),
-            RatePlan("NY_CONED_SMARTCHARGE", "coned", "SmartCharge New York"),
-            RatePlan("PA_PECO_TOU", "peco", "Residential Time-of-Use Pricing"),
-            RatePlan("IL_COMED_DTOD", "comed", "Delivery Time-of-Day (DTOD)"),
-            RatePlan("IL_COMED_HOURLY", "comed", "Hourly Pricing"),
-            RatePlan("OH_AEPOHIO_PEV", "aep_ohio", "Plug-In Electric Vehicle (PEV) Tariff"),
             RatePlan("GA_GAPOWER_TOUPEV12", "gapower", "Overnight Advantage"),
-            RatePlan("NC_DUKE_RSTOU", "duke", "Residential Service TOU"),
-            RatePlan("MI_DTE_TOD", "dte", "Time of Day 3 p.m.-7 p.m.")
+            RatePlan("GA_GAPOWER_NIGHTS_WEEKENDS", "gapower", "Nights & Weekends")
         )
         dao.insertPlans(plans)
 
@@ -64,13 +52,6 @@ object RateDataImporter {
         addDailySchedule(schedules, "FL_FPL_RTR1", LocalTime.of(12, 0), LocalTime.of(21, 0), 0.26, "On-Peak")
         addDailySchedule(schedules, "FL_FPL_RTR1", LocalTime.of(21, 0), LocalTime.MAX, 0.09, "Off-Peak")
 
-        // PA_PECO_TOU
-        addWeekdaySchedule(schedules, "PA_PECO_TOU", LocalTime.MIDNIGHT, LocalTime.of(6, 0), 0.076, "Off-Peak")
-        addWeekdaySchedule(schedules, "PA_PECO_TOU", LocalTime.of(6, 0), LocalTime.of(14, 0), 0.076, "Off-Peak")
-        addWeekdaySchedule(schedules, "PA_PECO_TOU", LocalTime.of(14, 0), LocalTime.of(18, 0), 0.32, "Peak")
-        addWeekdaySchedule(schedules, "PA_PECO_TOU", LocalTime.of(18, 0), LocalTime.MAX, 0.076, "Off-Peak")
-        addWeekendSchedule(schedules, "PA_PECO_TOU", LocalTime.MIDNIGHT, LocalTime.MAX, 0.076, "Off-Peak")
-
         // GA_GAPOWER_TOUPEV12
         addDailySchedule(schedules, "GA_GAPOWER_TOUPEV12", LocalTime.MIDNIGHT, LocalTime.of(7, 0), 0.02, "Super Off-Peak")
         addWeekdaySchedule(schedules, "GA_GAPOWER_TOUPEV12", LocalTime.of(7, 0), LocalTime.of(14, 0), 0.10, "Off-Peak")
@@ -79,10 +60,11 @@ object RateDataImporter {
         addDailySchedule(schedules, "GA_GAPOWER_TOUPEV12", LocalTime.of(23, 0), LocalTime.MAX, 0.02, "Super Off-Peak")
         addWeekendSchedule(schedules, "GA_GAPOWER_TOUPEV12", LocalTime.of(7, 0), LocalTime.of(23, 0), 0.10, "Off-Peak")
 
-        // MI_DTE_TOD
-        addDailySchedule(schedules, "MI_DTE_TOD", LocalTime.MIDNIGHT, LocalTime.of(15, 0), 0.18, "Off-Peak")
-        addWeekdaySchedule(schedules, "MI_DTE_TOD", LocalTime.of(15, 0), LocalTime.of(19, 0), 0.24, "On-Peak")
-        addDailySchedule(schedules, "MI_DTE_TOD", LocalTime.of(19, 0), LocalTime.MAX, 0.18, "Off-Peak")
+        // GA_GAPOWER_NIGHTS_WEEKENDS
+        addWeekdaySchedule(schedules, "GA_GAPOWER_NIGHTS_WEEKENDS", LocalTime.MIDNIGHT, LocalTime.of(14, 0), 0.078, "Off-Peak")
+        addWeekdaySchedule(schedules, "GA_GAPOWER_NIGHTS_WEEKENDS", LocalTime.of(14, 0), LocalTime.of(19, 0), 0.303, "On-Peak")
+        addWeekdaySchedule(schedules, "GA_GAPOWER_NIGHTS_WEEKENDS", LocalTime.of(19, 0), LocalTime.MAX, 0.078, "Off-Peak")
+        addWeekendSchedule(schedules, "GA_GAPOWER_NIGHTS_WEEKENDS", LocalTime.MIDNIGHT, LocalTime.MAX, 0.078, "Off-Peak")
 
         dao.insertSchedules(schedules)
     }

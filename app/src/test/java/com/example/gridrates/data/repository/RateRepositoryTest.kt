@@ -12,8 +12,10 @@ class RateRepositoryTest {
 
     @Test
     fun gaPowerOnPeakIsOnlyActiveDuringSummerMonths() {
-        val candidate = RateSchedule(
-            ratePlanId = "GA_GAPOWER_TOUPEV12",
+        val planIds = listOf("GA_GAPOWER_TOUPEV12", "GA_GAPOWER_NIGHTS_WEEKENDS")
+
+        val candidateTemplate = RateSchedule(
+            ratePlanId = "",
             dayType = DayType.WEEKDAY,
             startTime = LocalTime.of(14, 0),
             endTime = LocalTime.of(19, 0),
@@ -21,8 +23,8 @@ class RateRepositoryTest {
             label = "On-Peak"
         )
 
-        val fallback = RateSchedule(
-            ratePlanId = "GA_GAPOWER_TOUPEV12",
+        val fallbackTemplate = RateSchedule(
+            ratePlanId = "",
             dayType = DayType.WEEKDAY,
             startTime = LocalTime.of(14, 0),
             endTime = LocalTime.of(19, 0),
@@ -33,22 +35,27 @@ class RateRepositoryTest {
         val winter = LocalDateTime.of(2025, 1, 15, 15, 0)
         val summer = LocalDateTime.of(2025, 7, 15, 15, 0)
 
-        val winterResolved = RateRepository.resolveScheduleForSeasonalRules(
-            planId = "GA_GAPOWER_TOUPEV12",
-            candidate = candidate,
-            now = winter,
-            matchingSchedules = listOf(candidate, fallback)
-        )
+        planIds.forEach { planId ->
+            val candidate = candidateTemplate.copy(ratePlanId = planId)
+            val fallback = fallbackTemplate.copy(ratePlanId = planId)
 
-        val summerResolved = RateRepository.resolveScheduleForSeasonalRules(
-            planId = "GA_GAPOWER_TOUPEV12",
-            candidate = candidate,
-            now = summer,
-            matchingSchedules = listOf(candidate, fallback)
-        )
+            val winterResolved = RateRepository.resolveScheduleForSeasonalRules(
+                planId = planId,
+                candidate = candidate,
+                now = winter,
+                matchingSchedules = listOf(candidate, fallback)
+            )
 
-        assertEquals("Off-Peak", winterResolved?.label)
-        assertEquals("On-Peak", summerResolved?.label)
-        assertNotEquals(candidate.rate, winterResolved?.rate)
+            val summerResolved = RateRepository.resolveScheduleForSeasonalRules(
+                planId = planId,
+                candidate = candidate,
+                now = summer,
+                matchingSchedules = listOf(candidate, fallback)
+            )
+
+            assertEquals("Off-Peak", winterResolved?.label)
+            assertEquals("On-Peak", summerResolved?.label)
+            assertNotEquals(candidate.rate, winterResolved?.rate)
+        }
     }
 }
