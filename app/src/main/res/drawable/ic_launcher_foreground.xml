@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Chart Line leading into the bolt -->
+    <path
+        android:pathData="M15,75 L28,62 L42,72 L55,45"
+        android:strokeWidth="4"
+        android:strokeColor="#FFCC80"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+
+    <!-- Stylized Lightning Bolt -->
+    <path
+        android:pathData="M55,15 L33,52 L47,52 L33,92 L75,44 L61,44 L75,15 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:endX="75"
+                android:endY="92"
+                android:startX="33"
+                android:startY="15"
+                android:type="linear">
+                <item android:color="#FFB74D" android:offset="0" />
+                <item android:color="#E65100" android:offset="1" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Highlight for energy -->
+    <path
+        android:pathData="M55,15 L33,52 L47,52 L41,65 L55,50 L68,30 Z"
+        android:fillColor="#40FFFFFF" />
+
+</vector>

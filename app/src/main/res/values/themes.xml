@@ -1,0 +1,9 @@
+<resources>
+    <style name="Theme.GridRates" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:windowBackground">#0F111A</item>
+        <item name="android:statusBarColor">#0F111A</item>
+        <item name="android:navigationBarColor">#0F111A</item>
+        <!-- Android 12+ Splash Screen API -->
+        <item name="android:windowSplashScreenBackground">#0F111A</item>
+    </style>
+</resources>
